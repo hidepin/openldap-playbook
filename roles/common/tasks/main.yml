@@ -1,0 +1,48 @@
+---
+# file: roles/common/tasks/main.yml
+- name: Add common group
+  group:
+    name={{item.group}}
+    gid={{item.gid}}
+  with_items: common_user
+
+- name: Add common user
+  user:
+    name="{{item.name}}"
+    password="{{item.password}}"
+    uid="{{item.uid}}"
+    group="{{item.group}}"
+    comment="{{item.name}}"
+  with_items: common_user
+
+- name: packages install
+  yum: name={{item}} state=present
+  with_items:
+    - openssh-clients
+    - libselinux-python
+    - ntp
+
+- name: disable selinux
+  selinux: state=disabled
+  when: ansible_selinux.config_mode is not defined or ansible_selinux.config_mode != "disabled"
+
+- name: ntp setting
+  template: src=ntp.conf.j2 dest=/etc/ntp.conf
+  notify:
+    - ntpd start
+    - restart ntpd
+
+- name: ip*tables stopped
+  service: name={{item}} state=stopped enabled=no
+  with_items:
+    - ip6tables
+    - iptables
+
+- name: NetworkManager stopped
+  service: name=NetworkManager state=stopped enabled=no
+
+- name: generate hosts files
+  lineinfile: dest=/etc/hosts regexp='^{{item}}.*' line="{{item}} {{hostvars[item].ansible_fqdn}} {{hostvars[item].ansible_hostname}}" state=present
+  when: hostvars[item].ansible_fqdn is defined
+  with_items: groups['all']
+

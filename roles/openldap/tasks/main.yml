@@ -8,3 +8,13 @@
 
 - name: ldap db config.
   template: src=DB_CONFIG.j2 dest=/var/lib/ldap/DB_CONFIG owner=ldap group=ldap
+
+- name: ldap db check
+  command: ls -l /etc/openldap/slapd.d
+  register: ldap_db_check
+  failed_when: ldap_db_check.rc not in [0,1,2]
+  changed_when: ldap_db_check.stdout.find('cn=config') != -1
+
+- name: delete ldap default db
+  shell: rm -rf /etc/openldap/slapd.d/*
+  when: ldap_db_check.stdout.find('cn=config') != -1

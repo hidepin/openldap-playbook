@@ -1,0 +1,10 @@
+---
+# file: roles/openldap/tasks/main.yml
+- name: packages install
+  yum: name={{item}} state=present
+  with_items:
+    - openldap-servers
+    - openldap-clients
+
+- name: ldap db config.
+  template: src=DB_CONFIG.j2 dest=/var/lib/ldap/DB_CONFIG owner=ldap group=ldap

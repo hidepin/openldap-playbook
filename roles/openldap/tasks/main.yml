@@ -9,6 +9,9 @@
 - name: ldap db config.
   template: src=DB_CONFIG.j2 dest=/var/lib/ldap/DB_CONFIG owner=ldap group=ldap
 
+- name: ldap settings
+  template: src=slapd.conf.j2 dest=/etc/openldap/slapd.conf
+
 - name: ldap db check
   command: ls -l /etc/openldap/slapd.d
   register: ldap_db_check

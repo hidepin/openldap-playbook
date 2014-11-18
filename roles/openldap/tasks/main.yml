@@ -10,14 +10,16 @@
   template: src=DB_CONFIG.j2 dest=/var/lib/ldap/DB_CONFIG owner=ldap group=ldap
 
 - name: ldap settings
-  template: src=slapd.conf.j2 dest=/etc/openldap/slapd.conf
+  template: src=slapd.conf.j2 dest=/etc/openldap/slapd.conf owner=root group=root mode=644
+  notify:
+    - delete ldap default db
+    - ldap create db
+    - openldap start
+    - openldap restart
 
-- name: ldap db check
-  command: ls -l /etc/openldap/slapd.d
-  register: ldap_db_check
-  failed_when: ldap_db_check.rc not in [0,1,2]
-  changed_when: ldap_db_check.stdout.find('cn=config') != -1
+- name: openldap start
+  service: name=slapd state=started enabled=yes
 
-- name: delete ldap default db
-  shell: rm -rf /etc/openldap/slapd.d/*
-  when: ldap_db_check.stdout.find('cn=config') != -1
+- name: ldap rsyslogd
+  template: src=rsyslog.conf.j2 dest=/etc/rsyslog.conf
+  notify: rsyslog restart

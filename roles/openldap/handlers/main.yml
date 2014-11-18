@@ -1,0 +1,16 @@
+---
+# file: roles/openldap/handlers/main.yml
+- name: delete ldap default db
+  shell: rm -rf /etc/openldap/slapd.d/*
+
+- name: ldap create db
+  shell: slaptest -f /etc/openldap/slapd.conf -F /etc/openldap/slapd.d/ && chown -R ldap:ldap /etc/openldap/slapd.d
+
+- name: openldap start
+  service: name=slapd state=started enabled=yes
+
+- name: openldap restart
+  service: name=slapd state=restarted
+
+- name: rsyslog restart
+  service: name=rsyslog state=restarted

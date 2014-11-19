@@ -5,6 +5,9 @@
   with_items:
     - openldap-servers
     - openldap-clients
+    - nss-pam-ldapd
+    - mod_authz_ldap
+    - http://downloads.sourceforge.net/project/lam/LAM/4.7.1/ldap-account-manager-4.7.1-0.fedora.1.noarch.rpm
 
 - name: ldap db config.
   template: src=DB_CONFIG.j2 dest=/var/lib/ldap/DB_CONFIG owner=ldap group=ldap

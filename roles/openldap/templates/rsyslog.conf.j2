@@ -60,6 +60,8 @@ uucp,news.crit                                          /var/log/spooler
 # Save boot messages also to boot.log
 local7.*                                                /var/log/boot.log
 
+# openldap slapd log
+local4.*						/var/log/slapd/slapd.log
 
 # ### begin forwarding rule ###
 # The statement between the begin ... end define a SINGLE forwarding
@@ -83,6 +85,3 @@ local7.*                                                /var/log/boot.log
 $template SpiceTmpl,"%TIMESTAMP%.%TIMESTAMP:::date-subseconds% %syslogtag% %syslogseverity-text%:%msg:::sp-if-no-1st-sp%%msg:::drop-last-lf%\n"
 
 :programname, startswith, "spice-vdagent"	/var/log/spice-vdagent.log;SpiceTmpl
-
-# openldap slapd log
-local4.*						/var/log/slapd/slapd.log

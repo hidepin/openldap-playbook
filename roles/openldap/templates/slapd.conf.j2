@@ -104,7 +104,7 @@ access to *
 database monitor
 access to *
 	by dn.exact="gidNumber=0+uidNumber=0,cn=peercred,cn=external,cn=auth" read
-        by dn.exact="cn=Manager,dc=my-domain,dc=com" read
+        by dn.exact="cn=Manager,{{ldap_suffix}}" read
         by * none
 
 #######################################################################
@@ -112,9 +112,9 @@ access to *
 #######################################################################
 
 database	bdb
-suffix		"dc=localdomain"
+suffix		"{{ldap_suffix}}"
 checkpoint	1024 15
-rootdn		"cn=Manager,dc=localdomain"
+rootdn		"cn=Manager,{{ldap_suffix}}"
 # Cleartext passwords, especially for the rootdn, should
 # be avoided.  See slappasswd(8) and slapd.conf(5) for details.
 # Use of strong authentication encouraged.

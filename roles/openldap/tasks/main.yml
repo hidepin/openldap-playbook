@@ -5,6 +5,7 @@
   with_items:
     - openldap-servers
     - openldap-clients
+    - php-ldap
     - nss-pam-ldapd
     - mod_authz_ldap
     - http://downloads.sourceforge.net/project/lam/LAM/4.7.1/ldap-account-manager-4.7.1-0.fedora.1.noarch.rpm
@@ -26,3 +27,10 @@
 - name: ldap rsyslogd
   template: src=rsyslog.conf.j2 dest=/etc/rsyslog.conf
   notify: rsyslog restart
+
+- name: httpd settings
+  template: src=httpd.conf.j2 dest=/etc/httpd/conf/httpd.conf
+  notify: httpd restart
+
+- name: httpd start
+  service: name=httpd state=started enabled=yes
